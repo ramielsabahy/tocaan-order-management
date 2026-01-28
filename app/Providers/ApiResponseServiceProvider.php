@@ -49,5 +49,12 @@ class ApiResponseServiceProvider extends ServiceProvider
                 'data' => $data,
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         });
+
+        ResponseFacade::macro('error', function (?string $message = null): JsonResponse {
+            return response()->json([
+                'message' => $message ?? __('messages.Failed validation'),
+                'data' => null,
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        });
     }
 }
