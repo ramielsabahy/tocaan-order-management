@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Orders;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class CreateOrderRequest extends FormRequest
 {
@@ -26,5 +28,15 @@ class CreateOrderRequest extends FormRequest
             'items.*.product_id' => 'required|integer|exists:products,id',
             'items.*.quantity' => 'required|integer|min:1',
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(
+            response()->failedValidation(
+                __("api.validation.failed"),
+                $validator->errors()
+            )
+        );
     }
 }
