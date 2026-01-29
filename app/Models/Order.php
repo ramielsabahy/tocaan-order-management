@@ -23,4 +23,18 @@ class Order extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    public function scopeFilters($query)
+    {
+        if (request()->filled('status')) {
+            $query->where('status', request('status'));
+        }
+
+        return $query;
+    }
 }
