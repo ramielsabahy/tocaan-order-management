@@ -98,6 +98,25 @@ API endpoints, request/response examples, and usage are documented in Postman:
 
 Use this collection to explore and test the authentication, orders, confirmation, and payment endpoints.
 
+## Extending payment gateways
+
+The payment layer uses the **Strategy pattern**: each gateway is a separate class implementing `App\Contracts\PaymentInterface`. To add a new payment method:
+
+1. **Create a gateway service**  
+   Add a new class in `app/Services/` (e.g. `StripeService.php`) that implements `PaymentInterface`:
+   - `processPayment(Payment $payment): array` — call the external API and return `['success' => bool, 'transaction_id' => string, 'message' => string, 'gateway_response' => mixed]`.
+   - `validateCredentials(): bool` — return whether the gateway config (API keys, etc.) is present and valid.
+
+2. **Register the gateway in the factory**  
+   In `app/Services/PaymentGatewayFactory.php`:
+   - Add a new case in the `create(string $method)` match (e.g. `'stripe' => new StripeService()`).
+   - Add the method key to the array returned by `getSupportedMethods()` (e.g. `'stripe'`).
+
+3. **Add configuration**  
+   In `config/payment.php`, add an entry under `gateways` with the keys your service needs (e.g. `api_key`, `api_secret`), using `env()` for secrets. Add the corresponding variables to `.env` and `.env.example`.
+
+No changes are required in controllers, actions, or routes — the existing payment endpoint accepts a `payment_method` value and the factory returns the right implementation.
+
 ## Running tests
 
 ```bash
