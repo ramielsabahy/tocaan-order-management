@@ -14,5 +14,6 @@ Route::group(['prefix' => 'auth'], function () {
 Route::group(['middleware' => 'auth:sanctum'],function () {
     Route::resource('orders', OrderController::class);
     Route::put('confirm-order/{order}', ConfirmOrderController::class);
-    Route::post('payment/{order}', PaymentController::class);
+    Route::post('payment/{order}', [PaymentController::class, 'store']);
+    Route::get('payment', [PaymentController::class, 'index']);
 });

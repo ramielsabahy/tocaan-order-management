@@ -27,10 +27,20 @@ class OrderController extends Controller
     {
     }
 
-    public function index(): ResourceCollection
+    public function index(): JsonResponse
     {
         $orders = $this->listOrdersAction->execute();
-        return OrderResource::collection($orders);
+        $collection = OrderResource::collection($orders);
+        return response()->success([
+            'data' => $collection,
+            'links' => $orders->linkCollection(),
+            'meta' => [
+                'current_page' => $orders->currentPage(),
+                'last_page' => $orders->lastPage(),
+                'per_page' => $orders->perPage(),
+                'total' => $orders->total(),
+            ]
+        ]);
     }
 
     public function show(Order $order): JsonResponse
