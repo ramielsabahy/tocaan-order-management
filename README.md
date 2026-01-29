@@ -7,7 +7,7 @@ A Laravel-based API for order management with authentication, order lifecycle ha
 - **Authentication** — Register and login via Laravel Sanctum (API tokens)
 - **Orders** — Create, read, update, and delete orders with order items
 - **Order confirmation** — Confirm orders to move them to a confirmed state
-- **Payments** — Process payments for orders via Credit Card or PayPal
+- **Payments** — Process payments for orders via Credit Card or PayPal. Uses the **Strategy pattern** so new payment methods can be added with minimal code changes.
 - **Products** — Product catalog used in orders
 
 ## Requirements
